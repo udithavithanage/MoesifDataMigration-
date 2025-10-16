@@ -1,39 +1,26 @@
 import Moesif.chargebee;
 
-// import Moesif.salesforce as sf;
-
 import ballerina/http;
 import ballerina/io;
 
-// import ballerinax/salesforce;
-
 public function main() returns error? {
     string[] customerIds = [];
-    string? offset = ();
-    int 'limit = 3;
-    string path = string `/api/v2/invoices?limit=${'limit}`;
-    if offset is string {
-        path += "&offset=" + offset;
-    }
+    string customerPath = "/api/v2/customers/";
     while true {
 
-        http:Response res = check chargebee:chargebeeClient->get(path);
-        if res.statusCode != 200 {
-            return error("Chargebee API error (invoices): " + res.reasonPhrase);
+        chargebee:InvoiceRecord[]|error invoiceList = chargebee:fetchInvoices(100);
+
+        if invoiceList is error {
+            return error("Failed to fetch invoices: " + invoiceList.message());
         }
-
-        json payload = check res.getJsonPayload();
-        InvoiceResponse response = check payload.cloneWithType();
-
-        InvoiceRecord[] invoiceList = response.list;
 
         if invoiceList.length() == 0 {
             break;
         }
 
         // Extract unique customer IDs
-        foreach InvoiceRecord invoiceRecord in invoiceList {
-            Invoice invoice = invoiceRecord.invoice;
+        foreach chargebee:InvoiceRecord invoiceRecord in invoiceList {
+            chargebee:Invoice invoice = invoiceRecord.invoice;
             string customerId = invoice.customer_id;
             boolean exists = false;
             foreach string id in customerIds {
@@ -47,8 +34,19 @@ public function main() returns error? {
             }
         }
 
-        io:println(customerIds);
+        io:println(customerIds, " total unique customers so far: ", customerIds.length());
 
+        foreach string customerId in customerIds {
+            http:Response customerRes = check chargebee:chargebeeClient->get(customerPath + customerId);
+            if customerRes.statusCode != 200 {
+                return error("Chargebee API error (customers): " + customerRes.reasonPhrase);
+            }
+
+            json customerPayload = check customerRes.getJsonPayload();
+            chargebee:CustomerResponse customerResponse = check customerPayload.cloneWithType();
+
+            io:println("Fetched customer: ", customerResponse.customer);
+        }
         break;
     }
 }

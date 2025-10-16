@@ -1,21 +1,21 @@
-type InvoiceRecord record {|
+public type InvoiceRecord record {|
     Invoice invoice;
 |};
 
-type InvoiceResponse record {|
+public type InvoiceResponse record {|
     InvoiceRecord[] list;
     string? next_offset;
 |};
 
-type Invoice record {|
+public type Invoice record {|
     string id;
     string customer_id;
-    string subscription_id;
+    string subscription_id?;
     string status;
     int date;
     int total;
     int amount_paid;
-    int paid_at;
+    int paid_at?;
     string currency_code;
     BillingAddress? billing_address;
     LineItem[] line_items;
@@ -23,19 +23,19 @@ type Invoice record {|
     json...;
 |};
 
-type BillingAddress record {|
+public type BillingAddress record {|
     string? first_name;
-    string? last_name;
+    string? last_name?;
     string? company?;
-    string? line1;
-    string? city;
-    string? state;
-    string? country;
+    string? line1?;
+    string? city?;
+    string? state?;
+    string? country?;
     string? zip?;
     json...;
 |};
 
-type LineItem record {|
+public type LineItem record {|
     string id;
     int date_from;
     int date_to;
@@ -47,7 +47,7 @@ type LineItem record {|
     json...;
 |};
 
-type LinkedPayment record {|
+public type LinkedPayment record {|
     string txn_id;
     int applied_amount;
     int applied_at;
@@ -56,16 +56,18 @@ type LinkedPayment record {|
     json...;
 |};
 
-type CustomerResponse record {|
+public type CustomerResponse record {|
     Customer customer;
+    json...;
 |};
 
-type Customer record {|
+public type Customer record {|
     string id;
     string? first_name;
-    string? last_name;
-    string? company;
+    string? last_name?;
+    string? company?;
     string? email;
-    string? phone;
+    string? phone?;
     int? created_at;
+    json...;
 |};
