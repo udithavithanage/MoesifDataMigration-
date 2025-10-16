@@ -1,9 +1,9 @@
-type InvoiceList record {|
+type InvoiceRecord record {|
     Invoice invoice;
 |};
 
 type InvoiceResponse record {|
-    InvoiceList[] list;
+    InvoiceRecord[] list;
     string? next_offset;
 |};
 
