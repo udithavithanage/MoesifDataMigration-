@@ -5,7 +5,6 @@ import ballerina/io;
 public function main() returns error? {
     string[] customerIds = [];
     while true {
-
         chargebee:InvoiceRecord[]|error invoiceList = chargebee:fetchInvoices(100);
 
         if invoiceList is error {

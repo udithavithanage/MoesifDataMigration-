@@ -1,5 +1,9 @@
 import ballerina/http;
 
+# Fetch multiple invoices with a specified limit.
+#
+# + limit - Number of invoices to fetch.
+# + return - Array of Invoice records or an error.
 public isolated function fetchInvoices(int 'limit) returns InvoiceRecord[]|error {
     string path = string `${CHARGEBEE_GET_INVOICES_ENDPOINT}?limit=${'limit}`;
 
@@ -15,6 +19,10 @@ public isolated function fetchInvoices(int 'limit) returns InvoiceRecord[]|error
     return invoiceList;
 }
 
+# Fetch multiple customers by their IDs.
+#
+# + customerIdArray - Array of customer IDs to fetch.
+# + return - Array of Customer records or an error.
 public isolated function fetchCustomers(string[] customerIdArray) returns Customer[]|error {
     string path = string `${CHARGEBEE_GET_CUSTOMERS_ENDPOINT}`;
     Customer[] customers = [];
