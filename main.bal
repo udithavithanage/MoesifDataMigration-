@@ -1,11 +1,9 @@
 import Moesif.chargebee;
 
-import ballerina/http;
 import ballerina/io;
 
 public function main() returns error? {
     string[] customerIds = [];
-    string customerPath = "/api/v2/customers/";
     while true {
 
         chargebee:InvoiceRecord[]|error invoiceList = chargebee:fetchInvoices(100);
@@ -36,17 +34,13 @@ public function main() returns error? {
 
         io:println(customerIds, " total unique customers so far: ", customerIds.length());
 
-        foreach string customerId in customerIds {
-            http:Response customerRes = check chargebee:chargebeeClient->get(customerPath + customerId);
-            if customerRes.statusCode != 200 {
-                return error("Chargebee API error (customers): " + customerRes.reasonPhrase);
-            }
+        chargebee:Customer[]|error customers = chargebee:fetchCustomers(customerIds);
 
-            json customerPayload = check customerRes.getJsonPayload();
-            chargebee:CustomerResponse customerResponse = check customerPayload.cloneWithType();
-
-            io:println("Fetched customer: ", customerResponse.customer);
+        if customers is error {
+            return error("Failed to fetch customers: " + customers.message());
         }
+
+        io:println("Fetched customers: ", customers);
         break;
     }
 }
