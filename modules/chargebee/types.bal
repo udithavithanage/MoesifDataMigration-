@@ -39,22 +39,34 @@ public type Invoice record {|
 |};
 
 public type BillingAddress record {|
+    # Country of the billing address
+    string? country?;
     # First name of the billing address
     string? first_name;
     # Last name of the billing address
     string? last_name?;
+    # Email Id of the billing address
+    string? email_id?;
     # Company name of the billing address
     string? company?;
+    # Phone number of the billing address
+    string? phone?;
     # Line 1 of the billing address
     string? line1?;
+    # Line 2 of the billing address
+    string? line2?;
+    # Line 3 of the billing address
+    string? line3?;
+    # State of the billing address
+    string? state?;
     # City of the billing address
     string? city?;
-    # satate of the billing address
-    string? state?;
-    # Country of the billing address
-    string? country?;
     # Zip code of the billing address
     string? zip?;
+    # Validation status of the billing address
+    string validation_status;
+    # Object type
+    string 'object;
     json...;
 |};
 
@@ -67,7 +79,7 @@ public type LineItem record {|
     int date_to;
     # Unit amount of the line item
     int unit_amount;
-    # Quntity of the line item 
+    # Quantity of the line item 
     int quantity;
     # Description of the line item
     string description;
@@ -109,9 +121,10 @@ public type Customer record {|
     string? company?;
     # Customer email
     string? email;
-    # Customer phone number
-    string? phone?;
     # Customer created at timestamp
     int? created_at;
+    string 'object;
+    string preferred_currency_code;
+    BillingAddress? billing_address?;
     json...;
 |};
